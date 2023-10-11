@@ -6,6 +6,7 @@ import com.edu.messengerrelex.repositories.UserRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -17,19 +18,28 @@ public class UserService {
         this.repository = userRepository;
         this.modelMapper = modelMapper;
     }
-    public List<User> getAll() {
-        return this.repository.findAll();
+    public List<UserDto> getAll() {
+        List<User> userList =  this.repository.findAll();
+        List<UserDto> userDtoList = new ArrayList<>();
+        for(int i = 0; i < userList.size(); ++i) {
+            userDtoList.add(modelMapper.map(userList.get(i), UserDto.class));
+        }
+        return userDtoList;
     }
     public void save(User user) {
         this.repository.save(user);
     }
-    public UserDto getByUsername(String username) {
+    public UserDto getUserDtoByUsername(String username) {
         User user = this.repository.findByUsername(username);
         if(user == null) {
             return null;
         } else {
             return modelMapper.map(user, UserDto.class);
         }
+    }
+
+    public User getUserByUsername(String username) {
+        return this.repository.findByUsername(username);
     }
 
     public String getPasswordByUsername(String username) {

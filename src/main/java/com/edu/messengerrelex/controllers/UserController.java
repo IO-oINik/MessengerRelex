@@ -31,14 +31,14 @@ public class UserController {
         this.userDetailsService = userDetailsService;
     }
 
-    @GetMapping("")
-    public List<User> all() {
-        return service.getAll();
+    @GetMapping("/all")
+    public ResponseEntity<?> all() {
+        return ResponseEntity.ok(this.service.getAll());
     }
 
     @GetMapping("/{username}")
     public ResponseEntity<?> info(@PathVariable String username) {
-        UserDto user = service.getByUsername(username);
+        UserDto user = service.getUserDtoByUsername(username);
         if(user == null) {
             Map<String, String> responseMap = new HashMap<>();
             responseMap.put("error", "true");
@@ -74,7 +74,7 @@ public class UserController {
             responseMap.put("token", token);
             username = editUserRequest.getUsername();
         }
-        UserDto user = service.getByUsername(username);
+        UserDto user = service.getUserDtoByUsername(username);
         responseMap.put("user", user);
         return ResponseEntity.ok(responseMap);
     }
